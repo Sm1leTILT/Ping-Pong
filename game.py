@@ -112,6 +112,29 @@ def restart():
     plat2 = Player('plat.png', 560, 200, 30, 90, 5, K_UP, K_DOWN)
     face = Face('face.png', WIDTH//2, HEIGHT//4, 32, 32, 3)
 
+def check_game_status():
+    global stage
+    if face.rect.x < -face.rect.width:
+        stage =  '2 win'
+    if face.rect.x > WIDTH:
+        stage = '1 win'
+
+def win_screen(events):
+    global stage
+    if stage == '2 win':
+        print('2-nd WIN!')
+    if stage == '1 win':
+        print('1-st WIN!')
+    btn_restart.update(events)
+    btn_to_menu.update(events)
+    btn_to_menu.draw(mw)
+    btn_restart.draw(mw)
+    if btn_restart.is_clicked(events):
+        restart()
+        stage = 'game'
+    if btn_to_menu.is_clicked(events):
+        stage = 'Menu'
+
 stage = 'Menu'
 while stage != 'Off':
 
@@ -127,8 +150,11 @@ while stage != 'Off':
         menu(events)
     elif stage == 'game':
         game()
+        check_game_status()
     elif stage == 'Pause':
         pause(events)
+    elif stage == '2 win' or stage == '1 win':
+        win_screen(events)
     
     display.update()
     clock.tick(FPS)
